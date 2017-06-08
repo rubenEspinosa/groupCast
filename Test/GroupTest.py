@@ -33,8 +33,20 @@ if __name__ == "__main__":
 
     group.init_start()
 
+    #comprobar que funciona el annnounce
+    print "comprobacion announce"
     sleep(11)
-
     print group.get_members()
+    print group.get_members_name()
+
+    #comprobar que funciona deteccion y eliminacion de peers caidos
+    print "peer0, peer1 y peer2 simularan que han caido:"
+    peer0.stop_interval()
+    peer1.stop_interval()
+    peer2.stop_interval()
+    sleep(11)
+    print group.get_members()
+    print group.get_members_name()
+
 
     shutdown()
