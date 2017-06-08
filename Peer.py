@@ -19,7 +19,7 @@ class Peer(object):
         return self.messageList
 
     def announce(self):
-        self.tracker.announce(self.file, self.id)
+        self.group.announce(self.id)
 
     def stop_interval(self):
         self.time.set()

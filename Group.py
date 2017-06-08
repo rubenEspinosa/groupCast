@@ -11,8 +11,9 @@ class Group(object):
 
     def join(self,peer_ref):
         self.peerList[peer_ref] = 10
-        peer_ref.lookup().activarpeer
-        #activar intervalo peer----------------------------------------------------------------
+        peer=self.host.lookup(peer_ref)
+        peer.attach_group(self.proxy)
+        peer.init_gossip_cycle()
 
     def announce(self,peer_ref):
         if self.peerList.has_key(peer_ref):
