@@ -3,8 +3,8 @@ from pyactor.context import interval
 
 class Peer(object):
     _tell = ['attach_group','add_message','announce','stop_interval','init_gossip_cycle']
-    _ask = ['get_messages']
-    _ref = ['attach_group']
+    _ask = ['get_messages','get_name']
+    _ref = ['attach_group','announce']
 
     def __init__(self):
         self.messageList = {}    #conte la llista de chunks que te el peer
@@ -18,8 +18,11 @@ class Peer(object):
     def get_messages(self):
         return self.messageList
 
+    def get_name(self):
+        return self.id
+
     def announce(self):
-        self.group.announce(self.id)
+        self.group.announce(self.proxy)
 
     def stop_interval(self):
         self.time.set()

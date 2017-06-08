@@ -20,21 +20,21 @@ if __name__ == "__main__":
     peer8 = h.spawn("peer8", Peer)
     peer9 = h.spawn("peer9", Peer)
 
-    group.join('peer0')
-    group.join('peer1')
-    group.join('peer2')
-    group.join('peer5')
-    group.join('peer6')
-    group.join('peer3')
-    group.join('peer4')
-    group.join('peer7')
-    group.join('peer8')
-    group.join('peer9')
+    group.join(peer0)
+    group.join(peer1)
+    group.join(peer2)
+    group.join(peer5)
+    group.join(peer6)
+    group.join(peer3)
+    group.join(peer4)
+    group.join(peer7)
+    group.join(peer8)
+    group.join(peer9)
 
     group.init_start()
 
     sleep(11)
 
-    print group.get_members('peli1')
+    print group.get_members()
 
     shutdown()
