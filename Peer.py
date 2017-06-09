@@ -2,9 +2,9 @@ from pyactor.context import interval
 import queue
 
 class Peer(object):
-    _tell = ['attach_group','announce','stop_interval','init_gossip_cycle','multicast','receive','set_sequencer','set_peer_number','process_msg']
+    _tell = ['attach_group','announce','stop_interval','init_gossip_cycle','receive','set_peer_number','process_msg']
     _ask = ['get_messages','get_name']
-    _ref = ['attach_group','announce','multicast','set_sequencer']
+    _ref = ['attach_group','announce']
 
     def __init__(self):
         self.orderedList = []           #conte la llista de chunks que te el peer
@@ -50,11 +50,24 @@ class Peer(object):
     def receive(self,msg):
         self.orderingQueue.put(msg)
 
+class Sequencer(Peer):
+    _tell = Peer._tell + ['set_sequencer','multicast']
+    _ask= Peer._ask + ['get_number']
+    _ref = Peer._ref + ['set_sequencer']
+
+    def __init__(self):
+        super(Sequencer, self).__init__()
+        self.timestamp = 0
+
+    def get_number(self):
+        return self.timestamp
+        self.timestamp += 1
+
+    def set_sequencer(self,sequencer):
+        self.sequencer = sequencer
+
     def multicast(self, msg):
         timestamp = self.sequencer.get_number()
         for i in self.group.get_members():
             i.receive(timestamp, msg)
-
-    def set_sequencer(self,sequencer):
-        self.sequencer = sequencer
 

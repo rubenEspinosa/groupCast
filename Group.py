@@ -9,13 +9,17 @@ class Group(object):
     def __init__(self):
         self.peerList = {}
         self.number_peers= 0
+        self.sequencer=None
 
     def join(self,peer_ref):
         self.peerList[peer_ref] = 10
         peer_ref.attach_group(self.proxy)
-        peer_ref.init_gossip_cycle()
-        self.number_peers += 1
+        if self.sequencer is None:
+            self.sequencer= peer_ref
+        peer_ref.set_sequencer(self.sequencer)
         peer_ref.set_peer_number(self.number_peers)
+        self.number_peers += 1
+        peer_ref.init_gossip_cycle()
 
     def announce(self,peer_ref):
         if self.peerList.has_key(peer_ref):
