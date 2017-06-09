@@ -39,12 +39,16 @@ class Group(object):
             if self.peerList[i] <= 0:
                 self.peerList.pop(i)
 
-    #def setsequencer -> alforitmo de eleccion sequencer
-    #def getSequencer
+    def sequencer_election(self):
+        #bully
+        print "miau"
+
+    def get_sequencer(self):
+        return self.sequencer
+
     #comprobar si sequencer falla con otro intervalo? en caso afirmativo volver a elegir sequencer
     #metodos sequencer
     #los peers llamaran a getseQuencer de la clase group antes de enviar mensaje
-    #haran un lookup del sequencer obtenido
     #invocaran el metodo de obtener secuencia del secuencer (que hacen si sequencer peta?)
 
 
