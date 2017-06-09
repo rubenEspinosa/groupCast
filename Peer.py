@@ -1,21 +1,21 @@
 from pyactor.context import interval
-import Queue
+import queue
 
 class Peer(object):
-    _tell = ['attach_group','add_message','announce','stop_interval','init_gossip_cycle','multicast','receive']
-    _ask = ['get_messages','get_name','multicast']
-    _ref = ['attach_group','announce','multicast']
+    _tell = ['attach_group','announce','stop_interval','init_gossip_cycle','multicast','receive','set_sequencer','set_peer_number','process_msg']
+    _ask = ['get_messages','get_name']
+    _ref = ['attach_group','announce','multicast','set_sequencer']
 
     def __init__(self):
         self.orderedList = []           #conte la llista de chunks que te el peer
-        self.orderingQueue = Queue()
+        self.orderingQueue = queue.Queue()
         self.ts = 0                      #timestamp
 
     def attach_group(self,group):
         self.group = group
 
-    def add_message(self,message_id,message_data):
-        self.orderedList[message_id] = message_data
+    def set_peer_number(self,number):
+        self.peer_number= number
 
     def get_messages(self):
         return self.orderedList
@@ -28,11 +28,11 @@ class Peer(object):
 
     def stop_interval(self):
         self.time.set()
-        self.readMessages.set()
+        self.orderMessages.set()
 
     def init_gossip_cycle(self):
         self.time = interval(self.host, 5, self.proxy, "announce")
-        self.order = interval(self.host, 1, self.proxy, "process_msg")
+        self.orderMessages = interval(self.host, 1, self.proxy, "process_msg")
 
     def process_msg(self):
         while not self.orderingQueue.empty():
@@ -51,11 +51,10 @@ class Peer(object):
         self.orderingQueue.put(msg)
 
     def multicast(self, msg):
-        timestamp=
+        timestamp = self.sequencer.get_number()
         for i in self.group.get_members():
-            i.receive(msg)
+            i.receive(timestamp, msg)
 
-class Sequencer(Peer):
-    _tell = Peer._tell + []
-    _ask = Peer._ask+ []
-    _ref = Peer.ref + []
+    def set_sequencer(self,sequencer):
+        self.sequencer = sequencer
+

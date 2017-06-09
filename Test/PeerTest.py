@@ -1,7 +1,6 @@
-from pyactor.context import set_context, create_host, shutdown , sleep
-from Group import *
+from pyactor.context import set_context, create_host, sleep, shutdown
 from Peer import *
-
+from Group import *
 
 if __name__ == "__main__":
     set_context()
@@ -33,19 +32,5 @@ if __name__ == "__main__":
 
     group.init_start()
 
-    #comprobar que funciona el annnounce
-    print "comprobacion announce"
-    sleep(11)
-    print group.get_members()
-    print group.get_members_name()
-
-    #comprobar que funciona deteccion y eliminacion de peers caidos
-    print "peer0, peer1 y peer2 simularan que han caido:"
-    peer0.stop_interval()
-    peer1.stop_interval()
-    peer2.stop_interval()
-    sleep(11)
-    print group.get_members()
-    print group.get_members_name()
-
-    shutdown()
+    peer0.multicast("mensaje1")
+    #peer1.multicast("mensaje2")
