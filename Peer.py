@@ -1,8 +1,8 @@
 from pyactor.context import interval
 import queue
 
-class Peer(object):
-    _tell = ['attach_group','announce','stop_interval','init_gossip_cycle','receive','set_peer_number','process_msg']
+class Peer:
+    _tell = ['attach_group','announce','stop_interval','init_gossip_cycle','receive','process_msg']
     _ask = ['get_messages','get_name']
     _ref = ['attach_group','announce']
 
@@ -13,9 +13,6 @@ class Peer(object):
 
     def attach_group(self,group):
         self.group = group
-
-    def set_peer_number(self,number):
-        self.peer_number= number
 
     def get_messages(self):
         return self.orderedList
@@ -50,24 +47,34 @@ class Peer(object):
     def receive(self,msg):
         self.orderingQueue.put(msg)
 
+
 class Sequencer(Peer):
-    _tell = Peer._tell + ['set_sequencer','multicast']
-    _ask= Peer._ask + ['get_number']
+    _tell = Peer._tell + ['set_sequencer','multicast','sequencer_dictadure']
+    _ask = Peer._ask + ['get_number']
     _ref = Peer._ref + ['set_sequencer']
 
     def __init__(self):
-        super(Sequencer, self).__init__()
+        Peer.__init__(self)
         self.timestamp = 0
 
     def get_number(self):
-        return self.timestamp
         self.timestamp += 1
+        return self.timestamp-1
 
     def set_sequencer(self,sequencer):
         self.sequencer = sequencer
 
     def multicast(self, msg):
-        timestamp = self.sequencer.get_number()
+        try:
+            timestamp = self.sequencer.get_number(timeout=2)
+        except Exception:
+            self.group.sequencer_dictadure(self.proxy)
         for i in self.group.get_members():
             i.receive(timestamp, msg)
+
+    def sequencer_dictadure(self,dictator):
+        for i in self.peerList.keys():
+            i.set_sequencer(dictator)
+
+
 

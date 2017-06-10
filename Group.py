@@ -2,23 +2,17 @@ from pyactor.context import interval
 
 
 class Group(object):
-    _tell = ['join','init_start','update','leave','announce']
-    _ask = ['get_members','get_members_name']
-    _ref = ['join','announce','leave','get_members']
+    _tell = ['join','init_start','update','leave','announce','set_sequencer']
+    _ask = ['get_members','get_members_name','sequencer_dictadure']
+    _ref = ['join','announce','leave','get_members','set_sequencer','sequencer_dictadure']
 
     def __init__(self):
         self.peerList = {}
-        self.number_peers= 0
-        self.sequencer=None
 
     def join(self,peer_ref):
         self.peerList[peer_ref] = 10
         peer_ref.attach_group(self.proxy)
-        if self.sequencer is None:
-            self.sequencer= peer_ref
         peer_ref.set_sequencer(self.sequencer)
-        peer_ref.set_peer_number(self.number_peers)
-        self.number_peers += 1
         peer_ref.init_gossip_cycle()
 
     def announce(self,peer_ref):
@@ -28,6 +22,9 @@ class Group(object):
     def init_start(self):
         self.time = interval(self.host, 1, self.proxy, "update")
 
+    def set_sequencer(self,sequencer):
+        self.sequencer = sequencer
+
     def leave(self,peer_ref):
         peer_ref.stop_interval()
         self.peerList.pop(peer_ref)
@@ -36,7 +33,7 @@ class Group(object):
         return self.peerList.keys()
 
     def get_members_name(self):
-        for i in self.get_members():
+        for i in self.peerList.keys():
             print i.get_name()
 
     def update(self):
@@ -45,12 +42,11 @@ class Group(object):
             if self.peerList[i] <= 0:
                 self.peerList.pop(i)
 
-    def sequencer_election(self):
-        #bully
-        print "miau"
+    def sequencer_dictadure(self,dictator):
+        for i in self.peerList.keys():
+            i.set_sequencer(dictator)
 
-    def get_sequencer(self):
-        return self.sequencer
+
 
     #comprobar si sequencer falla con otro intervalo? en caso afirmativo volver a elegir sequencer
     #metodos sequencer
