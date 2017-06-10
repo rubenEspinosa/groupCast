@@ -3,8 +3,8 @@ from pyactor.context import interval
 
 class Group(object):
     _tell = ['join','init_start','update','leave','announce','set_sequencer']
-    _ask = ['get_members','get_members_name','sequencer_dictadure']
-    _ref = ['join','announce','leave','get_members','set_sequencer','sequencer_dictadure']
+    _ask = ['get_members','get_members_name']
+    _ref = ['join','announce','leave','get_members','set_sequencer']
 
     def __init__(self):
         self.peerList = {}
@@ -42,9 +42,6 @@ class Group(object):
             if self.peerList[i] <= 0:
                 self.peerList.pop(i)
 
-    def sequencer_dictadure(self,dictator):
-        for i in self.peerList.keys():
-            i.set_sequencer(dictator)
 
 
 

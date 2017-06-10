@@ -51,7 +51,7 @@ class Peer:
 class Sequencer(Peer):
     _tell = Peer._tell + ['set_sequencer','multicast','sequencer_dictadure']
     _ask = Peer._ask + ['get_number']
-    _ref = Peer._ref + ['set_sequencer']
+    _ref = Peer._ref + ['set_sequencer','sequencer_dictadure']
 
     def __init__(self):
         Peer.__init__(self)
@@ -65,16 +65,14 @@ class Sequencer(Peer):
         self.sequencer = sequencer
 
     def multicast(self, msg):
-        try:
-            timestamp = self.sequencer.get_number(timeout=2)
-        except Exception:
-            self.group.sequencer_dictadure(self.proxy)
+        timestamp = self.sequencer.get_number()
+        self.sequencer_dictadure()
         for i in self.group.get_members():
-            i.receive(timestamp, msg)
+            i.receive((timestamp, msg))
 
-    def sequencer_dictadure(self,dictator):
-        for i in self.peerList.keys():
-            i.set_sequencer(dictator)
+    def sequencer_dictadure(self):
+        for i in self.group.get_members():
+            i.set_sequencer(self.proxy)
 
 
 
