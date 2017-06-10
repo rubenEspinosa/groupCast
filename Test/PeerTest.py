@@ -1,4 +1,4 @@
-from pyactor.context import set_context, create_host, sleep, shutdown
+from pyactor.context import set_context, create_host, shutdown
 from Peer import *
 from Group import *
 

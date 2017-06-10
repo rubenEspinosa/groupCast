@@ -1,5 +1,7 @@
-from pyactor.context import interval
+from pyactor.exceptions import TimeoutError
 import queue
+from pyactor.context import interval
+
 
 class Peer:
     _tell = ['attach_group','announce','stop_interval','init_gossip_cycle','receive','process_msg']
@@ -66,7 +68,8 @@ class Sequencer(Peer):
 
     def multicast(self, msg):
         timestamp = self.sequencer.get_number()
-        self.sequencer_dictadure()
+        #en caso de morir el sequencer hace un golpe de estado
+        #self.sequencer_dictadure()
         for i in self.group.get_members():
             i.receive((timestamp, msg))
 

@@ -22,6 +22,7 @@ class Group(object):
     def init_start(self):
         self.time = interval(self.host, 1, self.proxy, "update")
 
+
     def set_sequencer(self,sequencer):
         self.sequencer = sequencer
 
