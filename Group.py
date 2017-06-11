@@ -1,13 +1,14 @@
-from pyactor.context import interval
+from Peer import *
 
 
 class Group(object):
-    _tell = ['join','init_start','update','leave','announce','set_sequencer']
-    _ask = ['get_members','get_members_name']
+    _tell = ['init_start','update','leave','announce','set_sequencer']
+    _ask = ['join','get_members','get_members_name']
     _ref = ['join','announce','leave','get_members','set_sequencer']
 
     def __init__(self):
         self.peerList = {}
+        self.sequencer = Peer()
 
     def join(self,peer_ref):
         self.peerList[peer_ref] = 10
@@ -21,7 +22,6 @@ class Group(object):
 
     def init_start(self):
         self.time = interval(self.host, 1, self.proxy, "update")
-
 
     def set_sequencer(self,sequencer):
         self.sequencer = sequencer
@@ -45,11 +45,3 @@ class Group(object):
 
 
 
-
-    #comprobar si sequencer falla con otro intervalo? en caso afirmativo volver a elegir sequencer
-    #metodos sequencer
-    #los peers llamaran a getseQuencer de la clase group antes de enviar mensaje
-    #invocaran el metodo de obtener secuencia del secuencer (que hacen si sequencer peta?)
-
-
-    #y si es el group el que hace de sequencer?? SE puede?

@@ -6,7 +6,7 @@ if __name__ == "__main__":
     set_context()
     h = create_host()
 
-    group = h.spawn('group1',Group)
+    group = h.spawn("group1",Group)
 
     peer0 = h.spawn("peer0", Sequencer)
     peer1 = h.spawn("peer1", Sequencer)
@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
     group.init_start()
 
-    #peer0.multicast("mensaje1")
-    peer1.multicast("mensaje2")
+    peer0.multicast("mensaje1")
+    #peer1.multicast("mensaje2")
 
     shutdown()

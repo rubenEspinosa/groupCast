@@ -58,6 +58,7 @@ class Sequencer(Peer):
     def __init__(self):
         Peer.__init__(self)
         self.timestamp = 0
+        self.sequencer = Peer()
 
     def get_number(self):
         self.timestamp += 1
@@ -65,6 +66,7 @@ class Sequencer(Peer):
 
     def set_sequencer(self,sequencer):
         self.sequencer = sequencer
+        print sequencer
 
     def multicast(self, msg):
         timestamp = self.sequencer.get_number()
