@@ -54,6 +54,21 @@ if __name__ == "__main__":
     print peer8.get_messages()
     print peer9.get_messages()
 
-    sleep(5)
+
+    #simularemos que el sequencer actual (peer0) ha salido del grupo.
+    #Esto generara dictadura para elegir el nuevo sequencer
+    group.leave(peer0)
+    sleep(1)
+
+    print peer1.get_sequencer()
+    print peer2.get_sequencer()
+    print peer3.get_sequencer()
+    print peer4.get_sequencer()
+    print peer5.get_sequencer()
+    print peer6.get_sequencer()
+    print peer7.get_sequencer()
+    print peer8.get_sequencer()
+    print peer9.get_sequencer()
+
 
     shutdown()

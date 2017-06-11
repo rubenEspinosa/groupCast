@@ -1,13 +1,13 @@
 from pyactor.exceptions import TimeoutError
 import queue
-from pyactor.context import interval
+from pyactor.context import interval, sleep
 import time
 
 
 class Peer:
     _tell = ['attach_group','announce','stop_interval','init_gossip_cycle','receive','process_msg']
-    _ask = ['get_messages','get_name']
-    _ref = ['attach_group','announce']
+    _ask = ['get_messages','get_name','get_sequencer']
+    _ref = ['attach_group','announce','get_sequencer']
 
     def __init__(self):
         self.orderedList = []           #conte la llista de chunks que te el peer
@@ -53,7 +53,7 @@ class Peer:
 
 class Sequencer(Peer):
     _tell = Peer._tell + ['set_sequencer','multicast','sequencer_dictadure']
-    _ask = Peer._ask + ['get_number']
+    _ask = Peer._ask + ['get_number','get_timestamp']
     _ref = Peer._ref + ['set_sequencer','sequencer_dictadure']
 
     def __init__(self):
@@ -65,22 +65,42 @@ class Sequencer(Peer):
         self.timestamp += 1
         return (self.timestamp-1,time.clock())
 
+    def get_sequencer(self):
+        return self.sequencer
+
     def set_sequencer(self,sequencer):
         self.sequencer = sequencer
 
+    def get_timestamp(self):
+        return self.ts
+
     def multicast(self, msg):
-        if self.sequencer == self.proxy:
-           timestamp= self.get_number()
-        else:
-            timestamp = self.sequencer.get_number()
-        #en caso de morir el sequencer hace un golpe de estado
-        #self.sequencer_dictadure()
-        for i in self.group.get_members():
-            i.receive((timestamp[0], msg,timestamp[1]))
+        try:
+            if self.sequencer == self.proxy:
+                timestamp = self.get_number()
+            else:
+                timestamp = self.sequencer.get_number()
+            for i in self.group.get_members():
+                i.receive((timestamp[0], msg, timestamp[1]))
+        except TimeoutError:
+            if not self.group.get_dictadure_state():
+                self.group.set_dictadure_state()
+                self.sequencer_dictadure()
+           # else:
+            #    self.multicast(msg)
 
     def sequencer_dictadure(self):
-        for i in self.group.get_members():
-            i.set_sequencer(self.proxy)
+        members = self.group.get_members()
+        best = (self.proxy,self.timestamp)
+        for i in members:
+            if not i == self.proxy:
+                timestamp = i.get_timestamp()
+                if timestamp > best[1]:
+                    best = (i,timestamp)
+        self.group.set_sequencer(best[0])
+        for i in members:
+            i.set_sequencer(best[0])
+        self.group.set_dictadure_state()
 
 
 
