@@ -1,6 +1,7 @@
 from pyactor.exceptions import TimeoutError
 import queue
 from pyactor.context import interval
+import time
 
 
 class Peer:
@@ -11,7 +12,7 @@ class Peer:
     def __init__(self):
         self.orderedList = []           #conte la llista de chunks que te el peer
         self.orderingQueue = queue.Queue()
-        self.ts = 0                      #timestamp
+        self.ts = -1                      #timestamp
 
     def attach_group(self,group):
         self.group = group
@@ -62,18 +63,20 @@ class Sequencer(Peer):
 
     def get_number(self):
         self.timestamp += 1
-        return self.timestamp-1
+        return (self.timestamp-1,time.clock())
 
     def set_sequencer(self,sequencer):
         self.sequencer = sequencer
-        print sequencer
 
     def multicast(self, msg):
-        timestamp = self.sequencer.get_number()
+        if self.sequencer == self.proxy:
+           timestamp= self.get_number()
+        else:
+            timestamp = self.sequencer.get_number()
         #en caso de morir el sequencer hace un golpe de estado
         #self.sequencer_dictadure()
         for i in self.group.get_members():
-            i.receive((timestamp, msg))
+            i.receive((timestamp[0], msg,timestamp[1]))
 
     def sequencer_dictadure(self):
         for i in self.group.get_members():

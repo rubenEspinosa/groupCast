@@ -1,4 +1,4 @@
-from pyactor.context import set_context, create_host, shutdown
+from pyactor.context import set_context, create_host, shutdown,sleep
 from Peer import *
 from Group import *
 
@@ -35,6 +35,25 @@ if __name__ == "__main__":
     group.init_start()
 
     peer0.multicast("mensaje1")
-    #peer1.multicast("mensaje2")
+    peer6.multicast("mensaje2")
+    peer1.multicast("mensaje3")
+    peer2.multicast("mensaje4")
+    peer5.multicast("mensaje5")
+    peer7.multicast("mensaje6")
+
+
+    sleep(3)
+
+    print peer0.get_messages()
+    print peer1.get_messages()
+    print peer3.get_messages()
+    print peer4.get_messages()
+    print peer5.get_messages()
+    print peer6.get_messages()
+    print peer7.get_messages()
+    print peer8.get_messages()
+    print peer9.get_messages()
+
+    sleep(5)
 
     shutdown()
