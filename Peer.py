@@ -49,6 +49,8 @@ class Peer:
 
     def receive(self,msg):
         self.orderingQueue.put(msg)
+        if self.timestamp < msg[0]:
+            self.timestamp = msg[0]
 
 
 class Sequencer(Peer):
@@ -86,8 +88,8 @@ class Sequencer(Peer):
             if not self.group.get_dictadure_state():
                 self.group.set_dictadure_state()
                 self.sequencer_dictadure()
-           # else:
-            #    self.multicast(msg)
+            else:
+                self.multicast(msg)
 
     def sequencer_dictadure(self):
         members = self.group.get_members()

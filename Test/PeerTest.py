@@ -44,6 +44,7 @@ if __name__ == "__main__":
 
     sleep(3)
 
+    print "los mensajes guardados son:"
     print peer0.get_messages()
     print peer1.get_messages()
     print peer3.get_messages()
@@ -60,6 +61,7 @@ if __name__ == "__main__":
     group.leave(peer0)
     sleep(1)
 
+    print "El nuevo lider elegido despues del leave de sequencer0 es:"
     print peer1.get_sequencer()
     print peer2.get_sequencer()
     print peer3.get_sequencer()
@@ -70,5 +72,23 @@ if __name__ == "__main__":
     print peer8.get_sequencer()
     print peer9.get_sequencer()
 
+    print "enviamos mas mensajes para ver que el timestamp sigue siendo correcto:"
+    peer6.multicast("mensaje7")
+    peer1.multicast("mensaje8")
+    peer2.multicast("mensaje9")
+
+    sleep(5)
+
+    print "los mensajes guardados son:"
+    print peer1.get_messages()
+    print peer3.get_messages()
+    print peer4.get_messages()
+    print peer5.get_messages()
+    print peer6.get_messages()
+    print peer7.get_messages()
+    print peer8.get_messages()
+    print peer9.get_messages()
+
+    sleep(5)
 
     shutdown()
