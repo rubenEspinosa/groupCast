@@ -4,7 +4,7 @@ from pyactor.context import interval, sleep
 import time
 
 
-class Peer:
+class Peer(object):
     _tell = ['attach_group','announce','stop_interval','init_gossip_cycle','receive','process_msg']
     _ask = ['get_messages','get_name']
     _ref = ['attach_group','announce']

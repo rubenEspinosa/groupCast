@@ -7,7 +7,7 @@ if __name__ == "__main__":
     set_context()
     h = create_host('http://127.0.0.1:1114/')
     group = h.lookup_url('http://127.0.0.1:2220/group', 'Group', 'Group')
-    group = h.spawn('group1', Group)
+    group = h.spawn('group', Group)
     peer4 = h.spawn("peer4", Sequencer)
 
     print "se realizara el join en 4 segundos..."
