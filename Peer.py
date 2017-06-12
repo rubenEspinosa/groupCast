@@ -49,13 +49,14 @@ class Peer:
 
     def receive(self,msg):
         self.orderingQueue.put(msg)
-        if self.timestamp < msg[0]:
-            self.timestamp = msg[0]
+        self.timestamp +=1
+        #if self.timestamp < msg[0]:
+         #   self.timestamp = msg[0]
 
 
 class Sequencer(Peer):
     _tell = Peer._tell + ['set_sequencer','multicast','sequencer_dictadure']
-    _ask = Peer._ask + ['get_number','get_timestamp']
+    _ask = Peer._ask + ['get_number','get_timestamp','getq']
     _ref = Peer._ref + ['set_sequencer','sequencer_dictadure']
 
     def __init__(self):
@@ -103,6 +104,10 @@ class Sequencer(Peer):
         for i in members:
             i.set_sequencer(best[0])
         self.group.set_dictadure_state()
+
+
+    def getq(self):
+        return self.orderingQueue
 
 
 

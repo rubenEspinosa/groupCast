@@ -1,6 +1,7 @@
 from pyactor.context import set_context, create_host, shutdown,sleep
 from Peer import *
 from Group import *
+import queue
 
 if __name__ == "__main__":
     set_context()
@@ -59,7 +60,7 @@ if __name__ == "__main__":
     #simularemos que el sequencer actual (peer0) ha salido del grupo.
     #Esto generara dictadura para elegir el nuevo sequencer
     group.leave(peer0)
-    sleep(1)
+    sleep(5)
 
     print "El nuevo lider elegido despues del leave de sequencer0 es:"
     print peer1.get_sequencer()
@@ -88,6 +89,13 @@ if __name__ == "__main__":
     print peer7.get_messages()
     print peer8.get_messages()
     print peer9.get_messages()
+
+
+    var = peer7.getq()
+    if var.empty():
+        print "vacia"
+    else:
+        print var.get()
 
     sleep(5)
 
