@@ -1,13 +1,14 @@
-from pyactor.context import set_context, create_host, shutdown,sleep
+from Group import *
+from pyactor.context import set_context, create_host, shutdown
 from Peer import *
-from GroupTest import *
-import queue
 
 if __name__ == "__main__":
     set_context()
-    h = create_host()
 
-    group = h.spawn("group1", Group)
+    h = create_host('http://127.0.0.1:1111/')
+
+    group = h.lookup_url('http://127.0.0.1:2220/group', 'Group', 'Group')
+    group = h.spawn('group', Group)
 
     peer0 = h.spawn("peer0", Sequencer)
     peer1 = h.spawn("peer1", Sequencer)
@@ -33,15 +34,12 @@ if __name__ == "__main__":
     group.join(peer8)
     group.join(peer9)
 
-    group.init_start()
-
     peer0.multicast("mensaje1")
     peer6.multicast("mensaje2")
     peer1.multicast("mensaje3")
     peer2.multicast("mensaje4")
     peer5.multicast("mensaje5")
     peer7.multicast("mensaje6")
-
 
     sleep(3)
 
@@ -55,7 +53,6 @@ if __name__ == "__main__":
     print peer7.get_messages()
     print peer8.get_messages()
     print peer9.get_messages()
-
 
     #simularemos que el sequencer actual (peer0) ha salido del grupo.
     #Esto generara dictadura para elegir el nuevo sequencer

@@ -1,7 +1,5 @@
-from pyactor.context import set_context, create_host, shutdown,sleep
-from Peer import *
-from GroupTest import *
-import queue
+from pyactor.context import set_context, create_host, shutdown
+from Group import *
 
 if __name__ == "__main__":
     set_context()

@@ -1,12 +1,13 @@
-from pyactor.context import set_context, create_host, shutdown , sleep
 from Group import *
+from pyactor.context import set_context, create_host, shutdown
 from Peer import *
-
 
 if __name__ == "__main__":
     set_context()
-    h = create_host()
 
+    h = create_host('http://127.0.0.1:1111/')
+
+    group = h.lookup_url('http://127.0.0.1:2220/group', 'Group', 'Group')
     group = h.spawn('group1', Group)
 
     peer0 = h.spawn("peer0", Sequencer)
@@ -30,8 +31,6 @@ if __name__ == "__main__":
     group.join(peer7)
     group.join(peer8)
     group.join(peer9)
-
-    group.init_start()
 
     #comprobar que funciona el annnounce
     print "comprobacion announce"
