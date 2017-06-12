@@ -6,13 +6,13 @@ import time
 
 class Peer:
     _tell = ['attach_group','announce','stop_interval','init_gossip_cycle','receive','process_msg']
-    _ask = ['get_messages','get_name','get_sequencer']
-    _ref = ['attach_group','announce','get_sequencer']
+    _ask = ['get_messages','get_name']
+    _ref = ['attach_group','announce']
 
     def __init__(self):
         self.orderedList = []           #conte la llista de chunks que te el peer
         self.orderingQueue = queue.Queue()
-        self.ts = -1                      #timestamp
+        self.queue_processed = -1                      #timestamp
 
     def attach_group(self,group):
         self.group = group
@@ -38,26 +38,24 @@ class Peer:
         while not self.orderingQueue.empty():
             message = self.orderingQueue.get()
             first = message[0]
-            while self.ts is not (message[0] - 1):
+            while self.queue_processed is not (message[0] - 1):
                 self.orderingQueue.put(message)
                 message = self.orderingQueue.get()
                 if message[0] == first:
                     self.orderingQueue.put(message)
                     return
             self.orderedList.append(message)
-            self.ts += 1
+            self.queue_processed += 1
 
     def receive(self,msg):
         self.orderingQueue.put(msg)
-        self.timestamp +=1
-        #if self.timestamp < msg[0]:
-         #   self.timestamp = msg[0]
+        self.timestamp += 1
 
 
 class Sequencer(Peer):
     _tell = Peer._tell + ['set_sequencer','multicast','sequencer_dictadure']
-    _ask = Peer._ask + ['get_number','get_timestamp','getq']
-    _ref = Peer._ref + ['set_sequencer','sequencer_dictadure']
+    _ask = Peer._ask + ['get_number','get_timestamp','get_sequencer']
+    _ref = Peer._ref + ['set_sequencer','sequencer_dictadure','get_sequencer']
 
     def __init__(self):
         Peer.__init__(self)
@@ -75,7 +73,7 @@ class Sequencer(Peer):
         self.sequencer = sequencer
 
     def get_timestamp(self):
-        return self.ts
+        return self.timestamp
 
     def multicast(self, msg):
         try:
@@ -89,25 +87,35 @@ class Sequencer(Peer):
             if not self.group.get_dictadure_state():
                 self.group.set_dictadure_state()
                 self.sequencer_dictadure()
-            else:
-                self.multicast(msg)
+            #else:
+                #self.multicast(msg)
 
     def sequencer_dictadure(self):
         members = self.group.get_members()
-        best = (self.proxy,self.timestamp)
-        for i in members:
-            if not i == self.proxy:
-                timestamp = i.get_timestamp()
-                if timestamp > best[1]:
-                    best = (i,timestamp)
-        self.group.set_sequencer(best[0])
-        for i in members:
-            i.set_sequencer(best[0])
-        self.group.set_dictadure_state()
+        try:
+            for i in members:
+                print i
+            members.remove(self.sequencer)
+            for i in members:
+                print i
+        except:
+            pass
+        finally:
+            best = (self.proxy,self.timestamp)
+            for i in members:
+                if not i == self.proxy:
+                    timestamp = i.get_timestamp()
+                    if timestamp > best[1]:
+                        best = (i,timestamp)
+            for i in members:
+                if not i == self.proxy:
+                    i.set_sequencer(best[0])
+                else:
+                    self.sequencer = best[0]
+            self.group.set_dictadure_state()
+            self.group.set_sequencer(best[0])
 
 
-    def getq(self):
-        return self.orderingQueue
 
 
 

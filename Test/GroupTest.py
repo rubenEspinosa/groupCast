@@ -7,7 +7,7 @@ if __name__ == "__main__":
     set_context()
     h = create_host()
 
-    group = h.spawn('group1',Group)
+    group = h.spawn('group1', Group)
 
     peer0 = h.spawn("peer0", Sequencer)
     peer1 = h.spawn("peer1", Sequencer)

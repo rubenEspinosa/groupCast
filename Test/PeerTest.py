@@ -1,13 +1,13 @@
 from pyactor.context import set_context, create_host, shutdown,sleep
 from Peer import *
-from Group import *
+from GroupTest import *
 import queue
 
 if __name__ == "__main__":
     set_context()
     h = create_host()
 
-    group = h.spawn("group1",Group)
+    group = h.spawn("group1", Group)
 
     peer0 = h.spawn("peer0", Sequencer)
     peer1 = h.spawn("peer1", Sequencer)
@@ -90,13 +90,8 @@ if __name__ == "__main__":
     print peer8.get_messages()
     print peer9.get_messages()
 
-
-    var = peer7.getq()
-    if var.empty():
-        print "vacia"
-    else:
-        print var.get()
-
     sleep(5)
+
+
 
     shutdown()
