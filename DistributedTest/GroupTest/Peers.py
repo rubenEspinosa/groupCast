@@ -8,7 +8,6 @@ if __name__ == "__main__":
     h = create_host('http://127.0.0.1:1111/')
 
     group = h.lookup_url('http://127.0.0.1:2220/group', 'Group', 'Group')
-    group = h.spawn('group1', Group)
 
     peer0 = h.spawn("peer0", Sequencer)
     peer1 = h.spawn("peer1", Sequencer)
@@ -20,6 +19,8 @@ if __name__ == "__main__":
     peer7 = h.spawn("peer7", Sequencer)
     peer8 = h.spawn("peer8", Sequencer)
     peer9 = h.spawn("peer9", Sequencer)
+
+    group.set_sequencer(peer0)
 
     group.join(peer0)
     group.join(peer1)
@@ -34,7 +35,7 @@ if __name__ == "__main__":
 
     #comprobar que funciona el annnounce
     print "comprobacion announce"
-    sleep(11)
+    sleep(15)
     print group.get_members()
     print group.get_members_name()
 
@@ -43,7 +44,7 @@ if __name__ == "__main__":
     peer0.stop_interval()
     peer1.stop_interval()
     peer2.stop_interval()
-    sleep(11)
+    sleep(15)
     print group.get_members()
     print group.get_members_name()
 

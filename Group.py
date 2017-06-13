@@ -5,7 +5,7 @@ import random
 class Group(object):
     _tell = ['init_start','update','leave','announce','set_sequencer']
     _ask = ['join','get_members','get_members_name','get_dictadure_state','set_dictadure_state','get_sequencer']
-    _ref = ['join','announce','leave','get_members','set_sequencer']
+    _ref = ['join','announce','leave','get_members','set_sequencer','get_sequencer']
 
     def __init__(self):
         self.peerList = {}
@@ -51,8 +51,10 @@ class Group(object):
         return self.peerList.keys()
 
     def get_members_name(self):
+        members = []
         for i in self.peerList.keys():
-            print i.get_name()
+            members.append(i.get_name())
+        return members
 
     def update(self):
         for i in self.peerList.keys():

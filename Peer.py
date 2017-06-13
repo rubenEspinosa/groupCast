@@ -1,3 +1,5 @@
+from random import randint
+
 from pyactor.exceptions import TimeoutError
 import queue
 from pyactor.context import interval, sleep
@@ -7,7 +9,7 @@ import time
 class Peer(object):
     _tell = ['attach_group','announce','stop_interval','init_gossip_cycle','receive','process_msg']
     _ask = ['get_messages','get_name']
-    _ref = ['attach_group','announce']
+    _ref = ['attach_group']
 
     def __init__(self):
         self.orderedList = []           #conte la llista de chunks que te el peer
@@ -77,8 +79,9 @@ class Sequencer(Peer):
 
     def multicast(self, msg):
         try:
+            #si es el sequencer no enviara mensaje
             if self.sequencer == self.proxy:
-                timestamp = self.get_number()
+                return
             else:
                 timestamp = self.sequencer.get_number()
             for i in self.group.get_members():
@@ -93,11 +96,7 @@ class Sequencer(Peer):
     def sequencer_dictadure(self):
         members = self.group.get_members()
         try:
-            for i in members:
-                print i
             members.remove(self.sequencer)
-            for i in members:
-                print i
         except:
             pass
         finally:

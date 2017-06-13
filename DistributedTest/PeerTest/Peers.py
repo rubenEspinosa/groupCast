@@ -8,7 +8,6 @@ if __name__ == "__main__":
     h = create_host('http://127.0.0.1:1111/')
 
     group = h.lookup_url('http://127.0.0.1:2220/group', 'Group', 'Group')
-    group = h.spawn('group', Group)
 
     peer0 = h.spawn("peer0", Sequencer)
     peer1 = h.spawn("peer1", Sequencer)
